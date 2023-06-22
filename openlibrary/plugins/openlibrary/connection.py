@@ -571,8 +571,16 @@ class MigrationMiddleware(ConnectionMiddleware):
                 return doc['location']
         return key
 
+    @overload
     def get_many(self, sitename: str, data: Dict[str, str]) -> str:
-        response = ConnectionMiddleware.get_many(self, sitename, data)
+        ...
+
+    @overload
+    def get_many(self, sitename: str, data: Dict[str, str]) -> str:
+        ...
+
+    def get_many(self, sitename: str, data: Dict[str, Any]) -> str:
+        response: str = ConnectionMiddleware.get_many(self, sitename, data)
         if response:
             data = json.loads(response)
             data = self._process(data)
